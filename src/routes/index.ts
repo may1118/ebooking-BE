@@ -6,12 +6,12 @@ var fs = require('fs')
  */
 
 module.exports = function (app: any){
-  var currentFilePath = __dirname
-  var routes =  fs.readdirSync(currentFilePath, 'utf-8')
+  var currentDirPath = __dirname
+  var routes =  fs.readdirSync(currentDirPath, 'utf-8')
 
   routes.forEach((item:string) => {
     if(item !== 'index.ts'){
-      let eachPath = path.join(currentFilePath, item);
+      let eachPath = path.join(currentDirPath, item);
       let eachRouter = require(eachPath);
       let eachRouterName = item.substr(0, item.lastIndexOf('.'))
       console.log('eachRouterName: ', eachRouterName)
