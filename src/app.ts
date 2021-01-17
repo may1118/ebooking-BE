@@ -4,8 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var addEachRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -19,8 +19,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+/**
+ * 需要注入一个个路由，但是可以放到额外的文件夹中
+ */
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
+addEachRouter(app);
+
 
 // catch 404 and forward to error handler
 app.use(function(req: any, res: any, next: any) {

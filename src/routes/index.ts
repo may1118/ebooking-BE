@@ -1,9 +1,21 @@
-var express = require('express');
-var router = express.Router();
+var path = require('path')
+var fs = require('fs')
+/**
+ * 可以写一个循环，读取该文件夹下的文件，循环注入到app中
+ * app.use('/xxx', xxx);
+ */
 
-/* GET home page. */
-router.get('/', function(req: any, res: any, next: any) {
-  res.render('index', { title: 'Express' });
-});
+module.exports = function (app: any){
+  var currentFilePath = __dirname
+  var routes =  fs.readdirSync(currentFilePath, 'utf-8')
 
-module.exports = router;
+  routes.forEach((item:string) => {
+    if(item !== 'index.ts'){
+      let eachPath = path.join(currentFilePath, item);
+      let eachRouter = require(eachPath);
+      let eachRouterName = item.substr(0, item.lastIndexOf('.'))
+      console.log('eachRouterName: ', eachRouterName)
+      app.use(`/${eachRouterName}`, eachRouter)
+    }
+  })
+}
