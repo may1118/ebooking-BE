@@ -14,7 +14,6 @@ module.exports = function (app: any){
       let eachPath = path.join(currentDirPath, item);
       let eachRouter = require(eachPath);
       let eachRouterName = item.substr(0, item.lastIndexOf('.'))
-      console.log('eachRouterName: ', eachRouterName)
       app.use(`/${eachRouterName}`, eachRouter)
     }
   })

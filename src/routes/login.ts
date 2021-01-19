@@ -1,9 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
+var setCookie = require('../servers/cookie.serve')
+import { success, fail } from '../servers/http.server'
+
 /* GET users listing. */
 router.get('/', function(req: any, res: any, next: any) {
-  res.send('login');
+  console.log(req.cookies)
+  setCookie(res, 'login', true);
+  res.json(success({
+    login: 'true'
+  }, 'hello'))
 });
 
 module.exports = router;

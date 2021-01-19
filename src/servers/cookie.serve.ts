@@ -7,6 +7,6 @@ let options = {
   sameSite: 'lax'
 }
 
-module.exports = function setCookie(res: any, key: string, value: string){
+module.exports = function setCookie(res: any, key: string, value: any){
   res.cookie(key, value, options);
 }

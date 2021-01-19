@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var addEachRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -19,12 +18,30 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/**
+ * 拦截器
+ * 请求发送过来的时候，统一进行身份的验证，如果不符合要求需要告知or重定向
+ * finish 需要排除是否访问的是登录接口
+ */
+
+app.use(function(req: any, res: any, next: any){
+  if(req.path === '/login'){
+    next();
+  } else {
+    const cookies = req.cookies;
+    if(!cookies || !cookies.login){
+      console.log('未登录')
+      res.send('please login')
+    } else {
+      next();
+    }  
+  }
+})
+
 
 /**
  * 需要注入一个个路由，但是可以放到额外的文件夹中
  */
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
 addEachRouter(app);
 
 
