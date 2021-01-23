@@ -1,12 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import * as express from 'express'
+import * as logger from 'morgan'
+import * as cookieParser from 'cookie-parser'
+import * as path from 'path'
+import * as createError from 'http-errors'
+
+/**
+ * interface
+ */
+import { Express,Request, Response,NextFunction } from 'express'
 
 var addEachRouter = require('./routes/index');
-
-var app = express();
+var app: Express = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  * finish 需要排除是否访问的是登录接口
  */
 
-app.use(function(req: any, res: any, next: any){
+app.use(function(req: Request, res: Response, next: NextFunction){
   if(req.path === '/login'){
     next();
   } else {
@@ -46,12 +50,12 @@ addEachRouter(app);
 
 
 // catch 404 and forward to error handler
-app.use(function(req: any, res: any, next: any) {
+app.use(function(req: Request, res: Response, next: NextFunction) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err: any, req: any, res: any, next: any) {
+app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

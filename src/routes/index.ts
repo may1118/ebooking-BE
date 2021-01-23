@@ -1,13 +1,15 @@
-var path = require('path')
-var fs = require('fs')
+import * as fs from 'fs'
+import * as path from 'path'
+import { Express } from 'express'
+
 /**
  * 可以写一个循环，读取该文件夹下的文件，循环注入到app中
  * app.use('/xxx', xxx);
  */
 
-module.exports = function (app: any){
+module.exports = function (app: Express){
   var currentDirPath = __dirname
-  var routes =  fs.readdirSync(currentDirPath, 'utf-8')
+  var routes: string[] =  fs.readdirSync(currentDirPath, 'utf-8')
 
   routes.forEach((item:string) => {
     if(item !== 'index.ts'){
