@@ -1,4 +1,4 @@
-export default function(to: string, vertifyCode: number){
+export function receiveEmailFormat(to: string, vertifyCode: number){
   const htmlEmail = `
   <h3>欢迎使用易程ebooking系统</h3>
   <br />
@@ -13,4 +13,9 @@ export default function(to: string, vertifyCode: number){
     subject: "[易程]绑定邮箱", // Subject line
     html: htmlEmail, // html body  
   }
+}
+
+export const emailConfig = {
+  user: '517537976@qq.com',
+  pass: 'ansaawweixpibjea'
 }

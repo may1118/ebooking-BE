@@ -29,17 +29,19 @@ app.use(express.static(path.join(__dirname, 'public')));
  */
 
 app.use(function(req: Request, res: Response, next: NextFunction){
-  if(req.path === '/login'){
-    next();
-  } else {
-    const cookies = req.cookies;
-    if(!cookies || !cookies.login){
-      console.log('未登录')
-      res.send('please login')
-    } else {
-      next();
-    }  
-  }
+  // 暂时取消身份验证
+  // if(req.path === '/login'){
+  //   next();
+  // } else {
+  //   const cookies = req.cookies;
+  //   if(!cookies || !cookies.login){
+  //     console.log('未登录')
+  //     res.send('please login')
+  //   } else {
+  //     next();
+  //   }  
+  // }
+  next()
 })
 
 
