@@ -5,6 +5,11 @@
   "scripts": {
     "start": "nodemon ./bin/www.ts"
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
