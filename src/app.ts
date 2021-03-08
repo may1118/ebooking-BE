@@ -23,6 +23,18 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
+ * 配置跨域
+ */
+app.all('*', function(req: Request, res: Response, next: NextFunction) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By",' 3.2.1')
+  res.header("Content-Type", "application/json;charset=utf-8");
+  next();
+});
+
+/**
  * 拦截器
  * 请求发送过来的时候，统一进行身份的验证，如果不符合要求需要告知or重定向
  * finish 需要排除是否访问的是登录接口
