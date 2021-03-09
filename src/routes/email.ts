@@ -5,19 +5,7 @@ import { Request, Response, NextFunction } from 'express'
 
 import sendFormat from '../config/requestSendBack'
 
-import sendEmail from '../controllers/email'
-
-// todo 需要维护一个对象，用来存储验证信息
-interface emailVertifyType {
-  [key: string]: {
-    vertifyCode: number,
-    time: number
-  }
-}
-const emailVertify: emailVertifyType = {}
-// todo 设置过期事件：5min
-const expiredTime = 5 * 60 * 1000;
-const pollEmailVertifyObject = 30 * 60 * 1000;
+import { sendEmail, emailVertify, expiredTime } from '../controllers/email'
 
 /**
  * /getEmailVertify
@@ -56,7 +44,6 @@ router.post('/vertify', function (req: Request, res: Response, next: NextFunctio
     res.send(sendFormat('', false, '邮箱格式不正确'));
   }
   // 验证是否正确，并且没有过期
-  console.log(emailVertify)
   if (emailVertify[email]) {
     const { vertifyCode: localCode, time } = emailVertify[email]
     if (Number(remoteCode) === Number(localCode)) {
@@ -83,14 +70,3 @@ function getRandom(min = 100000, max = 999999) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
 }
-
-// 每半小时查询emailVertify的每一项是否有过期的内容，如果有则删除
-setInterval(_ => {
-  const now = new Date().getTime();
-  Object.keys(emailVertify).forEach(key => {
-    const { time } = emailVertify[key];
-    if (now - time > expiredTime) {
-      delete emailVertify[key]
-    }
-  })
-}, pollEmailVertifyObject)
