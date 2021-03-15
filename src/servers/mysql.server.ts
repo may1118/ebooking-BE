@@ -1,21 +1,28 @@
-import { MysqlError, PoolConnection } from 'mysql';
+import { MysqlError, PoolConnection, Pool } from 'mysql';
 
 var mysql = require('mysql')
 var mysqlBaseConfig = require('../config/mysql')
 
-var pool = mysql.createPool(mysqlBaseConfig);
+// init DBPool
+const pool = mysql.createPool(mysqlBaseConfig);
 
-pool.getConnection((err: MysqlError, connect: PoolConnection) => {
-  if(err) throw err;
-  connect.query('select * from user', (err: any, res: any, fields: any) => {
-    connect.release();
 
-    if(err) throw err;
-    // console.log(res, fields)
+export const query = function (sql: string, values: Array<string>) {
+  return new Promise((resolve, reject) => {
+    pool.getConnection(function (err: MysqlError, connection: PoolConnection) {
+      if (err) {
+        reject(err)
+      } else {
+        connection.query(sql, values, (err, rows) => {
+
+          if (err) {
+            reject(err)
+          } else {
+            resolve(rows)
+          }
+          connection.release()
+        })
+      }
+    })
   })
-})
-
-
-pool.on('connection', (connection: any) => {
-  console.log('connection')
-})
+}

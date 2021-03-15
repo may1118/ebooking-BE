@@ -7,6 +7,8 @@ import sendFormat from '../config/requestSendBack'
 
 import { sendEmail, emailVertify, expiredTime } from '../controllers/email'
 
+import { query } from '../servers/mysql.server'
+
 /**
  * /getEmailVertify
  * @params email: 用户的邮箱
@@ -50,6 +52,7 @@ router.post('/vertify', function (req: Request, res: Response, next: NextFunctio
       // 验证是否过期
       if (new Date().getTime() - time < expiredTime) {
         // todo 需要存入数据库中
+
         res.send(sendFormat('success'))
       } else {
         res.send(sendFormat('验证码已过期，请重新获取'))
