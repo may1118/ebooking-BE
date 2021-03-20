@@ -16,7 +16,7 @@ import { encrypt } from '../controllers/encryption'
  * @param isEncrypt 可选字段 是否加密 默认是false
  * @returns 执行结果 & 状态
  */
-export const query = function (sql: string, values: Array<string>, isEncrypt?: Boolean) {
+export const query = function (sql: string, values: Array<string>, isEncrypt?: Boolean): Promise<any> {
   isEncrypt = isEncrypt ? true : false
 
   return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ export const query = function (sql: string, values: Array<string>, isEncrypt?: B
           if (err) {
             reject(err)
           } else {
-            resolve(rows)
+            resolve(JSON.parse(JSON.stringify(rows)))
           }
           connection.release()
         })

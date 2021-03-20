@@ -58,6 +58,6 @@ setInterval(_ => {
       delete emailVertify[key]
     }
   })
-  console.log(emailVertify)
+  console.log('30min轮训一次邮箱存储列表：>>>', emailVertify)
 }, pollEmailVertifyObject)
 

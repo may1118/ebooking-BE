@@ -9,7 +9,7 @@ import { emailVertify } from '../controllers/email'
 
 // sql
 import { query } from '../servers/mysql.server'
-import { registerUser } from '../middlewares/sql'
+import { registerUser, registerBefore } from '../middlewares/sql'
 
 
 interface UserInterface {
@@ -27,19 +27,16 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
   try {
     /**
      * 验证email 和 手机 验证码是否符合要求
-     * 因为没有买手机验证码，所以暂时将手机验证码统一为111111（6个1）
+     * ! 因为没有买手机验证码，所以暂时将手机验证码统一为111111（6个1）
      */
     if (!vertifyUserInfo(req.body)) throw '格式错误，请重试'
     if (Number(phoneVertifyCode) !== 111111) throw '手机验证码错误'
-    // todo 需要验证是否有验证码 （是否失效or不存在）   验证验证码是否正确
-    // if(!emailVertify[userEmail]) throw '邮箱验证码不存在或失效'
-    // todo 暂时将验证码设置成11111，方便后续注册
-    if (111111 !== Number(emailVertifyCode)) throw '邮箱验证码错误'
-    // if (Number(emailVertify[userEmail].vertifyCode) === Number(emailVertifyCode)) {
+    if(!emailVertify[userEmail]) throw '邮箱验证码不存在或失效'
+    if (Number(emailVertify[userEmail].vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
 
+    const [{ num }] = await query(registerBefore, [userPhone], true)
+    if (num) throw '该号码已注册'
 
-    // todo 验证之前是否注册过，如果注册过，则要求直接登陆即可
-    // todo 将个人信息写入数据库，并且对于某些字段需要加密存储
     await query(registerUser, [userName, userPassword, userPhone, userEmail], true)
     res.send(sendFormat({
       code: 0,
