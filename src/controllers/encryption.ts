@@ -8,7 +8,7 @@ let bufferKey = Buffer.from(key, 'utf8');
 let bufferIv = Buffer.from(iv, 'utf8');
 
 // 加密
-function encrypt(src: string) {
+export function encrypt(src: string) {
   let sign = '';
   const cipher = crypto.createCipheriv(algorithm, bufferKey, bufferIv);
   sign += cipher.update(src, 'utf8', 'hex');
@@ -17,15 +17,10 @@ function encrypt(src: string) {
 }
 
 // 解密
-function decrypt(sign: string) {
+export function decrypt(sign: string) {
   let src = '';
   const cipher = crypto.createDecipheriv(algorithm, bufferKey, bufferIv);
   src += cipher.update(sign, 'hex', 'utf8');
   src += cipher.final('utf8');
   return src;
-}
-
-module.exports = {
-  encrypt, // 加密算法
-  decrypt // 解密算法
 }
