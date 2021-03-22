@@ -60,7 +60,7 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
       }])
       if (!vertify) throw '参数错误'
     }
-    let userInfo = null
+    let userInfo: userBaseInfoInterface | null = null
     // 1. 如果是用户名 + 密码：和数据库进行匹配
     switch (type) {
       case LOGIN_TYPE.NAME_PASS:
@@ -71,7 +71,7 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
     // 2. 如果是邮箱 + 验证码：验证验证码是否正确 & 邮箱进行匹配（需要保证邮箱唯一）
       case LOGIN_TYPE.EMAIL_CODE:
         console.log('>>> email & code login.')
-        // if (Number(emailVertify[userEmail]?.vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
+        if (Number(emailVertify[userEmail]?.vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
         userInfo = await query(loginEmail_Code, [userEmail], true)
         if (!userInfo) throw 'login error'
         break;
@@ -81,7 +81,7 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
     }
     // login success
     // 需要验证是否上传酒店信息
-    const { hotel_id } = userInfo
+    const { hotel_id, user_name, user_phone, user_email } = userInfo
     if (!hotel_id) {
       res.send(sendFormat({
         code: 0,
@@ -96,6 +96,9 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
         code: 0,
         data: {
           hasHotelInfo: true,
+          user_name,
+          user_phone,
+          user_email,
           hotel_id,
           login: 'success',
           msg: 'no hotel info'
