@@ -30,7 +30,14 @@ export const query = function (sql: string, values: Array<string>, isEncrypt?: B
           if (err) {
             reject(err)
           } else {
-            resolve(JSON.parse(JSON.stringify(rows)))
+            // 优化，加入返回的数组长度为1，则直接返回那一个obj即可
+            const stringifyRes = JSON.parse(JSON.stringify(rows))
+            if (stringifyRes.length === 1) {
+              const [singleObj] = stringifyRes
+              resolve(singleObj)
+            } else {
+              resolve(stringifyRes)
+            }
           }
           connection.release()
         })

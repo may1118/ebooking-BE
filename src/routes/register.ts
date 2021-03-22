@@ -34,7 +34,7 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
     if(!emailVertify[userEmail]) throw '邮箱验证码不存在或失效'
     if (Number(emailVertify[userEmail].vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
 
-    const [{ num }] = await query(registerEmailBefore, [userEmail], true)
+    const { num } = await query(registerEmailBefore, [userEmail], true)
     if (num) throw '该邮箱已注册'
 
     await query(registerUser, [userName, userPassword, userPhone, userEmail], true)

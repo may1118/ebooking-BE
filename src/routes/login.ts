@@ -60,13 +60,13 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
       }])
       if (!vertify) throw '参数错误'
     }
-    let userInfo: userBaseInfoInterface[] = []
+    let userInfo = null
     // 1. 如果是用户名 + 密码：和数据库进行匹配
     switch (type) {
       case LOGIN_TYPE.NAME_PASS:
         console.log('>>> username & password login.')
         userInfo = await query(loginName_Pass, [userName, userPassword + '-'], true)
-        if (!userInfo.length) throw 'login error.'
+        if (!userInfo) throw 'login error.'
         // login success
         console.log('>>>val', userInfo)
         break;
@@ -75,7 +75,7 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
         console.log('>>> email & code login.')
         // if (Number(emailVertify[userEmail]?.vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
         userInfo = await query(loginEmail_Code, [userEmail], true)
-        if (!userInfo.length) throw 'login error'
+        if (!userInfo) throw 'login error'
         // login success
         console.log('>>>val', userInfo)
         break;
@@ -84,7 +84,7 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
         break;
     }
     // success 
-    
+
     res.send('success')
   } catch (error) {
     res.send(sendFormat({
