@@ -6,11 +6,23 @@ var router = express.Router();
 import sendFormat from '../config/requestSendBack'
 import { vertifyType, vertifyArrInterFace, isVertifyArr } from '../controllers/vertify'
 
+import { emailVertify } from '../controllers/email'
+
 import { query } from '../servers/mysql.server'
+import { loginName_Pass, loginEmail_Code } from '../middlewares/sql'
 
 enum LOGIN_TYPE {
   NAME_PASS,
   EMAIL_CODE
+}
+
+interface userBaseInfoInterface {
+  user_id: number,
+  user_name: string,
+  user_password: string,
+  user_phone: string,
+  user_email: string,
+  hotel_id: number | null
 }
 
 /**
@@ -48,11 +60,31 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
       }])
       if (!vertify) throw '参数错误'
     }
-
+    let userInfo: userBaseInfoInterface[] = []
     // 1. 如果是用户名 + 密码：和数据库进行匹配
-    
+    switch (type) {
+      case LOGIN_TYPE.NAME_PASS:
+        console.log('>>> username & password login.')
+        userInfo = await query(loginName_Pass, [userName, userPassword + '-'], true)
+        if (!userInfo.length) throw 'login error.'
+        // login success
+        console.log('>>>val', userInfo)
+        break;
     // 2. 如果是邮箱 + 验证码：验证验证码是否正确 & 邮箱进行匹配（需要保证邮箱唯一）
-
+      case LOGIN_TYPE.EMAIL_CODE:
+        console.log('>>> email & code login.')
+        // if (Number(emailVertify[userEmail]?.vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
+        userInfo = await query(loginEmail_Code, [userEmail], true)
+        if (!userInfo.length) throw 'login error'
+        // login success
+        console.log('>>>val', userInfo)
+        break;
+      default:
+        throw 'type error.'
+        break;
+    }
+    // success 
+    
     res.send('success')
   } catch (error) {
     res.send(sendFormat({
