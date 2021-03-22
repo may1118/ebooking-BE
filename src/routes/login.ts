@@ -67,8 +67,6 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
         console.log('>>> username & password login.')
         userInfo = await query(loginName_Pass, [userName, userPassword + '-'], true)
         if (!userInfo) throw 'login error.'
-        // login success
-        console.log('>>>val', userInfo)
         break;
     // 2. 如果是邮箱 + 验证码：验证验证码是否正确 & 邮箱进行匹配（需要保证邮箱唯一）
       case LOGIN_TYPE.EMAIL_CODE:
@@ -76,16 +74,35 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
         // if (Number(emailVertify[userEmail]?.vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
         userInfo = await query(loginEmail_Code, [userEmail], true)
         if (!userInfo) throw 'login error'
-        // login success
-        console.log('>>>val', userInfo)
         break;
       default:
         throw 'type error.'
         break;
     }
-    // success 
+    // login success
+    // 需要验证是否上传酒店信息
+    const { hotel_id } = userInfo
+    if (!hotel_id) {
+      res.send(sendFormat({
+        code: 0,
+        data: {
+          hasHotelInfo: false,
+          login: 'success',
+          msg: 'no hotel info'
+        }
+      }))
+    } else {
+      res.send(sendFormat({
+        code: 0,
+        data: {
+          hasHotelInfo: true,
+          hotel_id,
+          login: 'success',
+          msg: 'no hotel info'
+        }
+      }))
+    }
 
-    res.send('success')
   } catch (error) {
     res.send(sendFormat({
       code: 1,
