@@ -5,11 +5,12 @@ var router = express.Router();
 
 import sendFormat from '../config/requestSendBack'
 import { vertifyType, vertifyArrInterFace, isVertifyArr } from '../controllers/vertify'
-
 import { emailVertify } from '../controllers/email'
-
+// sql
 import { query } from '../servers/mysql.server'
 import { loginName_Pass, loginEmail_Code } from '../middlewares/sql'
+
+var setCookie = require('../servers/cookie.serve')
 
 enum LOGIN_TYPE {
   NAME_PASS,
@@ -82,13 +83,17 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
     // login success
     // 需要验证是否上传酒店信息
     const { hotel_id, user_name, user_phone, user_email } = userInfo
+    setCookie(res, 'user/user_name', user_name);
+    setCookie(res, 'user/user_phone', user_phone);
+    setCookie(res, 'user/user_email', user_email);
+    setCookie(res, 'hotel/hotel_id', hotel_id);
+    setCookie(res, 'user/login', true);
     if (!hotel_id) {
       res.send(sendFormat({
         code: 0,
         data: {
           hasHotelInfo: false,
           login: 'success',
-          msg: 'no hotel info'
         }
       }))
     } else {
@@ -101,7 +106,6 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
           user_email,
           hotel_id,
           login: 'success',
-          msg: 'no hotel info'
         }
       }))
     }
