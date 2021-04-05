@@ -6,7 +6,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as readline from 'readline'
 
-import { queryNoParams } from '../../servers/mysql.server'
+import { queryNoParams } from '../src/servers/mysql.server'
 
 const files = fs.readdirSync(__dirname)
 
@@ -14,7 +14,7 @@ files.forEach(async item => {
   const current = path.join(__dirname, item)
   if (current === __filename) {
     console.log('self', item)
-    return 
+    return
   } else {
     try {
       processLineByLine(current);
