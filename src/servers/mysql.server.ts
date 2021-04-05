@@ -45,3 +45,19 @@ export const query = function (sql: string, values: Array<string>, isEncrypt?: B
     })
   })
 }
+
+export const queryNoParams = function (sql: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    pool.getConnection(function (err: MysqlError, connection: PoolConnection) {
+      if (err) {
+        reject(err)
+      } else {
+        console.log(sql)
+        connection.query(sql, (err) => {
+          if (err) throw 'error'
+          connection.release()
+        })
+      }
+    })
+  })
+}

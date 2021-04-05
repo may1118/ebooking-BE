@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www.ts"
+    "start": "nodemon ./bin/www.ts",
+    "region": "ts-node ./src/middlewares/reginSql/writeDB.ts"
   },
   "config": {
     "commitizen": {
