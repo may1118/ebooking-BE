@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws'
 
-let ws = new WebSocket('ws://localhost:8080/test');
+let ws = new WebSocket('ws://localhost:8080/ws/1');
 
 // 打开WebSocket连接后立刻发送一条消息:
 ws.on('open', function () {
