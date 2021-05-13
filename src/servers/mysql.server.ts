@@ -52,9 +52,19 @@ export const queryNoParams = function (sql: string): Promise<any> {
       if (err) {
         reject(err)
       } else {
-        console.log(sql)
-        connection.query(sql, (err) => {
-          if (err) throw 'error'
+        connection.query(sql, (err, rows) => {
+          if (err) {
+            throw 'error'
+          } else {
+            // 优化，加入返回的数组长度为1，则直接返回那一个obj即可
+            const stringifyRes = JSON.parse(JSON.stringify(rows))
+            if (stringifyRes.length === 1) {
+              const [singleObj] = stringifyRes
+              resolve(singleObj)
+            } else {
+              resolve(stringifyRes)
+            }
+          }
           connection.release()
         })
       }

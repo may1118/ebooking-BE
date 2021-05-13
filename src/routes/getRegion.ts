@@ -49,10 +49,10 @@ router.get('/', async function (req: Request, res: Response, next: NextFunction)
     if (!parent_id && !name) {
       position = await getPositionFromDB(positionByParent_id, chinaId)
     }
-    res.send(sendFormat({
+    res.send({
       code: 0,
       data: position
-    }));
+    });
   } catch (error) {
     res.send(sendFormat({
       code: 0,
