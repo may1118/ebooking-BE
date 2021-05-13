@@ -9,6 +9,8 @@ import { emailVertify } from '../controllers/email'
 // sql
 import { query } from '../servers/mysql.server'
 import { loginName_Pass, loginEmail_Code } from '../middlewares/sql'
+// 加密算法
+import { decrypt } from '../controllers/encryption'
 
 var setCookie = require('../servers/cookie.serve')
 
@@ -35,7 +37,7 @@ interface userBaseInfoInterface {
  * 1. 加入cookie，方便之后前后端拦截操作
  * 2. 返回用户基本信息（主要集中在是否上传酒店信息内容）
  */
-router.post('/', async function(req: Request, res: Response, next: NextFunction) {
+router.post('/', async function (req: Request, res: Response, next: NextFunction) {
   const { userName, userPassword, userEmail, emailVertifyCode } = req.body;
   let type = null
   try {
@@ -66,10 +68,10 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
     switch (type) {
       case LOGIN_TYPE.NAME_PASS:
         console.log('>>> username & password login.')
-        userInfo = await query(loginName_Pass, [userName, userPassword + '-'], true)
+        userInfo = await query(loginName_Pass, [userName, userPassword], true)
         if (!userInfo) throw 'login error.'
         break;
-    // 2. 如果是邮箱 + 验证码：验证验证码是否正确 & 邮箱进行匹配（需要保证邮箱唯一）
+      // 2. 如果是邮箱 + 验证码：验证验证码是否正确 & 邮箱进行匹配（需要保证邮箱唯一）
       case LOGIN_TYPE.EMAIL_CODE:
         console.log('>>> email & code login.')
         if (Number(emailVertify[userEmail]?.vertifyCode) !== Number(emailVertifyCode)) throw '邮箱验证码错误'
@@ -83,38 +85,38 @@ router.post('/', async function(req: Request, res: Response, next: NextFunction)
     // login success
     // 需要验证是否上传酒店信息
     const { hotel_id, user_name, user_phone, user_email } = userInfo
-    setCookie(res, 'user/user_name', user_name);
-    setCookie(res, 'user/user_phone', user_phone);
-    setCookie(res, 'user/user_email', user_email);
+    setCookie(res, 'user/user_name', decrypt(user_name));
+    setCookie(res, 'user/user_phone', decrypt(user_phone));
+    setCookie(res, 'user/user_email', decrypt(user_email));
     setCookie(res, 'hotel/hotel_id', hotel_id);
     setCookie(res, 'user/login', true);
     if (!hotel_id) {
-      res.send(sendFormat({
+      res.send({
         code: 0,
         data: {
           hasHotelInfo: false,
           login: 'success',
         }
-      }))
+      })
     } else {
-      res.send(sendFormat({
+      res.send({
         code: 0,
         data: {
           hasHotelInfo: true,
-          user_name,
-          user_phone,
-          user_email,
+          user_name: decrypt(user_name),
+          user_phone: decrypt(user_phone),
+          user_email: decrypt(user_email),
           hotel_id,
           login: 'success',
         }
-      }))
+      })
     }
 
   } catch (error) {
-    res.send(sendFormat({
+    res.send({
       code: 1,
       message: error
-    }))
+    })
   }
 });
 
