@@ -20,38 +20,19 @@ const wsClients: wsClientInterface = {}
 
 app.ws('/ws/:wid',  (ws: WebSocket, req: Request) => {
   const uid = req.params.wid
+console.log(uid)
   wsClients[uid] = {}
   if(!wsClients) {
-    wsClients[uid] = {
-      ws: ws
-    }
+    // wsClients[uid] = {
+    //   ws: ws
+    // }
   }
-
-  console.log(req)
   ws.onclose = () => {
 
   }
+  ws.send('hello')
 })
 
 app.listen(8888, () => {
-  console.log('visit http://localhost:8888');
+  console.log('success.');
 });
-// // 引用Server类:
-// const WebSocketServer = WebSocket.Server;
-
-// // 实例化:
-// const wss = new WebSocketServer({
-//   port: 8080
-// });
-
-// wss.on('connection', (ws: WebSocket) => {
-//   console.log(`[SERVER] connection()`);
-//   ws.on('message', function (message) {
-//     console.log(`[SERVER] Received: ${message}`);
-//     ws.send(`ECHO: ${message} hello`, (err) => {
-//       if (err) {
-//         console.log(`[SERVER] error: ${err}`);
-//       }
-//     });
-//   })
-// })

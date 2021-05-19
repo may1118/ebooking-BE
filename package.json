@@ -5,8 +5,8 @@
   "scripts": {
     "start": "nodemon ./bin/www.ts",
     "region": "ts-node ./test/writeDB.ts",
-    "ws": "ts-node ./src/servers/websocket.serve.ts",
-    "wsTest": "ts-node ./test/websocket.ts"
+    "ws": "nodemon ./src/servers/websocket.serve.ts",
+    "wsTest": "nodemon ./test/websocket.ts"
   },
   "config": {
     "commitizen": {

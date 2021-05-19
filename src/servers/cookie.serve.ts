@@ -1,7 +1,6 @@
 let overTime = 30 * 86400000
 
 let options = {
-  httpOnly: true,
   maxAge: overTime,
   expires: new Date(new Date().getTime() + overTime),
   sameSite: 'lax'
