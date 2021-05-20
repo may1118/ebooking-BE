@@ -6,7 +6,7 @@ import { encrypt } from '../controllers/encryption'
 
 import { Request, Response, NextFunction } from 'express'
 import { query, queryNoParams } from '../servers/mysql.server'
-import { isRegistByEmail, setHotelInfo, getInsertId, setUserHotelId, registerUser } from '../middlewares/sql'
+import { isRegistByEmail, setHotelInfo, getInsertId, setUserHotelId, registerUser, addRoomInfo } from '../middlewares/sql'
 
 /**
  * 用户注册酒店信息
@@ -21,18 +21,23 @@ import { isRegistByEmail, setHotelInfo, getInsertId, setUserHotelId, registerUse
  * 2. 存入酒店基本信息（两张表通过 hotelId 关联上）
  */
 router.post('/', async function (req: Request, res: Response, next: NextFunction) {
-  const { phone, email, provice, city, district, hotelName, des, config } = req.body;
+  const { phone, email, provice, city, district, hotelName, des, config: configStr } = req.body;
+  const config = JSON.parse(configStr)
   try {
     const pos = [provice, city, district].join('-')
     // 1. 查询邮箱是否注册过 -》 加密存储的信息
     const { num } = await query(isRegistByEmail, [email], true)
     // 2. 存入酒店基本信息，获取id
-    await query(setHotelInfo, [hotelName, pos, des, config])
+    await query(setHotelInfo, [hotelName, pos, des])
     const { hotel_id } = await queryNoParams(getInsertId)
     // 注册
     if (!num) query(registerUser, ['酒店商家', '123456', phone, email], true)
     // 关联表格
     query(setUserHotelId, [hotel_id, encrypt(email)])
+    // 存储room信息
+    for(const item of config) {
+      query(addRoomInfo, [hotel_id, item.name, item.number, item.price])
+    }
 
     res.send({
       code: 0,
