@@ -3,6 +3,7 @@ const chinaRegin = 'china_region'
 const hotel = 'hotel'
 const live_user = 'live_user'
 const room = 'room'
+const live = 'live'
 /**
  * 规定返回形式
  * 1. 如果是查询数量，需要返回的格式是：{ num: Number }
@@ -40,3 +41,9 @@ export const getRegisterId = `select id from ${ live_user } where phone = ?`
 
 // room
 export const getRoom = `SELECT hotel_id, room_id, room_quantity room_number, room_price, room_name FROM ${ room } WHERE hotel_id = ?`
+export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_recieve, is_tell_hotel_user, is_reject) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+export const getSoldRoomByTimeRange = (room_id: any, live_time: any, leave_time: any) => {
+  return `SELECT needNumber soldNumber FROM ${ live } WHERE room_id = ${ room_id } AND (live_time <= '${ live_time }' AND leave_time >= '${ leave_time }') OR (live_time <= '${ live_time }' AND leave_time <= '${ leave_time }' AND leave_time >= '${ live_time }') OR (live_time >= '${ live_time }' AND leave_time >= '${ leave_time }' AND live_time <= '${ leave_time }') OR (live_time >= '${ live_time }' AND leave_time <= '${ leave_time }')`
+}
+export const getRoomQuantity = `SELECT room_quantity FROM ${ room } WHERE room_id = ?`
