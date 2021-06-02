@@ -4,6 +4,8 @@ const hotel = 'hotel'
 const live_user = 'live_user'
 const room = 'room'
 const live = 'live'
+const hotel_study = 'hotel_study'
+const comment = 'comment'
 /**
  * 规定返回形式
  * 1. 如果是查询数量，需要返回的格式是：{ num: Number }
@@ -38,12 +40,28 @@ export const getHotelByPosition = `SELECT hotel_id, hotel_name, hotel_position, 
 export const register = `INSERT INTO ${ live_user }(name, phone) values (?, ?)`
 export const isRegister = `SELECT COUNT(*) num FROM ${ live_user } where name = ? AND phone = ?`
 export const getRegisterId = `select id from ${ live_user } where phone = ?`
+export const getUserInfo = `SELECT * FROM ${ live_user } WHERE id = ?`
+export const getUserOrder = `SELECT * FROM ${ live } WHERE user_id = ?`
 
 // room
 export const getRoom = `SELECT hotel_id, room_id, room_quantity room_number, room_price, room_name FROM ${ room } WHERE hotel_id = ?`
-export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_recieve, is_tell_hotel_user, is_reject) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_recieve, is_tell_hotel_user, is_reject, order_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+export const getRoomByRoomId = `SELECT room_name FROM ${ room } WHERE room_id = ?`
+export const changeLiveStatus = `UPDATE ${ live } SET status = ? WHERE live_id = ?`
 
 export const getSoldRoomByTimeRange = (room_id: any, live_time: any, leave_time: any) => {
   return `SELECT needNumber soldNumber FROM ${ live } WHERE room_id = ${ room_id } AND (live_time <= '${ live_time }' AND leave_time >= '${ leave_time }') OR (live_time <= '${ live_time }' AND leave_time <= '${ leave_time }' AND leave_time >= '${ live_time }') OR (live_time >= '${ live_time }' AND leave_time >= '${ leave_time }' AND live_time <= '${ leave_time }') OR (live_time >= '${ live_time }' AND leave_time <= '${ leave_time }')`
 }
 export const getRoomQuantity = `SELECT room_quantity FROM ${ room } WHERE room_id = ?`
+
+export const getHotelAuto = `SELECT hotel_is_auto, hotel_auto_base hotel_auto_base_obj FROM ${ hotel } WHERE hotel_id = ?`
+
+// hotel_study
+export const getHotelStudyVideo = `SELECT * FROM ${  hotel_study }`
+
+// get live order info
+export const getOrderByHotelId = `SELECT * FROM ${ live } WHERE hotel_id = ?`
+
+// comment
+export const getComment = `SELECT * FROM ${ comment } WHERE live_id = ?`
+export const addComment = `INSERT INTO ${ comment }(live_id, from_id, to_id, comment_type, content, comment_time) VALUES (?,?,?,?,?,?)`

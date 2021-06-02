@@ -7,7 +7,7 @@
     "region": "ts-node ./test/writeDB.ts",
     "ws": "nodemon ./src/servers/websocket.serve.ts",
     "wsTest": "nodemon ./test/websocket.ts",
-    "test": "nodemon src/middlewares/buy.ts"
+    "test": "nodemon src/middlewares/autoOrder.ts"
   },
   "config": {
     "commitizen": {

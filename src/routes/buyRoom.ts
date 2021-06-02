@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express'
 import { getHotelByPosition, getRoom, addLiveRoom } from '../middlewares/sql'
 import { query } from '../servers/mysql.server'
 import { hasEnoughRoom } from '../middlewares/buy'
+import { autoOrder } from '../middlewares/autoOrder'
 
 var router = express.Router();
 router.get('/', async function (req: Request, res: Response, next: NextFunction) {
@@ -45,7 +46,7 @@ router.post('/buy', async function (req: Request, res: Response) {
   }
   // end
   const hotelObj = JSON.parse(req.body.hotel)
-  const { hotel_base_config, userPhone, userId, userName } = hotelObj
+  const { hotel_base_config, userPhone, userId, userName, hotel_id } = hotelObj
   const roomArr = []
   let flag = false
   // todo 查询该酒店在这天是否有足够的房源，存储形式
@@ -63,9 +64,10 @@ router.post('/buy', async function (req: Request, res: Response) {
       // 循环执行sql语句
       for (const item of roomArr) {
         const { room_id, needNumber, room_price, timeRange, hotel_id } = item.room
-        await query(addLiveRoom, [hotel_id, room_id, room_price, needNumber, timeRange[0], timeRange[1], userId, userName, userPhone, 0, 0, 0])
+        await query(addLiveRoom, [hotel_id, room_id, room_price, needNumber, timeRange[0], timeRange[1], userId, userName, userPhone, 0, 0, 0, new Date().getTime(), 0])
       }
       // auto 接单操作
+      autoOrder(hotel_id)
     } catch (error) {
       ret.code = 1
       ret.data = '写入失败'

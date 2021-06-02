@@ -8,31 +8,31 @@ import { Request } from 'express'
 const app = new express();
 expressWs(app);
 
-interface clientInterface {
-  ws: WebSocket
-}
-interface wsClientInterface {
-  [uid: string]: any;
-}
-
 // 保存所有用户连接信息
-const wsClients: wsClientInterface = {}
+const wsClients: any = {}
 
 app.ws('/ws/:wid',  (ws: WebSocket, req: Request) => {
-  const uid = req.params.wid
+  const uid = Number(req.params.wid)
 console.log(uid)
   wsClients[uid] = {}
-  if(!wsClients) {
-    // wsClients[uid] = {
-    //   ws: ws
-    // }
+  if(!wsClients && uid !== -1) {
+    wsClients[uid] = {
+      ws: ws
+    }
   }
   ws.onclose = () => {
-
+    console.log('>>> exit')
   }
-  ws.send('hello')
 })
 
 app.listen(8888, () => {
   console.log('success.');
 });
+
+
+export const isConnect = (uid: any) => {
+  Object.keys(wsClients).find((item: any) => {
+    const { ws } = item
+    return Number(ws) === Number(uid)
+  })
+}

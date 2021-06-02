@@ -16,8 +16,9 @@ import { encrypt } from '../controllers/encryption'
  * @param isEncrypt 可选字段 是否加密 默认是false
  * @returns 执行结果 & 状态
  */
-export const query = function (sql: string, values: Array<string>, isEncrypt?: Boolean): Promise<any> {
+export const query = function (sql: string, values: Array<string>, isEncrypt?: Boolean, notSingle2Obj?: boolean): Promise<any> {
   isEncrypt = isEncrypt ? true : false
+  notSingle2Obj = notSingle2Obj ? true : false
 
   return new Promise((resolve, reject) => {
     pool.getConnection(function (err: MysqlError, connection: PoolConnection) {
@@ -32,7 +33,7 @@ export const query = function (sql: string, values: Array<string>, isEncrypt?: B
           } else {
             // 优化，加入返回的数组长度为1，则直接返回那一个obj即可
             const stringifyRes = JSON.parse(JSON.stringify(rows))
-            if (stringifyRes.length === 1) {
+            if (stringifyRes.length === 1 && !notSingle2Obj) {
               const [singleObj] = stringifyRes
               resolve(singleObj)
             } else {
