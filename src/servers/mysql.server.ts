@@ -47,7 +47,7 @@ export const query = function (sql: string, values: Array<string>, isEncrypt?: B
   })
 }
 
-export const queryNoParams = function (sql: string): Promise<any> {
+export const queryNoParams = function (sql: string, notSingle2Obj?: boolean): Promise<any> {
   return new Promise((resolve, reject) => {
     pool.getConnection(function (err: MysqlError, connection: PoolConnection) {
       if (err) {
@@ -59,7 +59,7 @@ export const queryNoParams = function (sql: string): Promise<any> {
           } else {
             // 优化，加入返回的数组长度为1，则直接返回那一个obj即可
             const stringifyRes = JSON.parse(JSON.stringify(rows))
-            if (stringifyRes.length === 1) {
+            if (stringifyRes.length === 1 && !notSingle2Obj) {
               const [singleObj] = stringifyRes
               resolve(singleObj)
             } else {

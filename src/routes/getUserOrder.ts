@@ -18,9 +18,22 @@ router.post('/', async function (req: Request, res: Response, next: NextFunction
       const { status, needNumber, live_id } = item
 
       const data = await query(getComment, [live_id], false, true)
+      // 商家已回复的情况下
+      // 需要对data进行组合，组合成前端直接可以使用的形式
+      let userComment = JSON.parse(JSON.stringify(data))
+      if (data.length === 2) {
+        let hotelComment = data.find((item: any) => item.comment_type === 'HOTEL')
+        userComment = data.find((item: any) => item.comment_type === 'USER')
+
+        userComment = [{
+          ...userComment,
+          hotelComment: hotelComment.content,
+          hotelCommentTime: hotelComment.comment_time
+        }]
+      }
 
       return {
-        comment: data.length ? data : null,
+        comment: userComment,
         hotel_name,
         room_name: `${room_name} * ${needNumber}` || '-',
         live_price,

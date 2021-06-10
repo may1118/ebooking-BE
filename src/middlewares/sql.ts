@@ -6,6 +6,7 @@ const room = 'room'
 const live = 'live'
 const hotel_study = 'hotel_study'
 const comment = 'comment'
+const hos = 'hos_detail'
 /**
  * 规定返回形式
  * 1. 如果是查询数量，需要返回的格式是：{ num: Number }
@@ -65,3 +66,10 @@ export const getOrderByHotelId = `SELECT * FROM ${ live } WHERE hotel_id = ?`
 // comment
 export const getComment = `SELECT * FROM ${ comment } WHERE live_id = ?`
 export const addComment = `INSERT INTO ${ comment }(live_id, from_id, to_id, comment_type, content, comment_time) VALUES (?,?,?,?,?,?)`
+export const getAllCommentByHotelId = (hotel_id: string) => {
+  return `SELECT * FROM ${ comment } WHERE (to_id = ${ hotel_id } AND comment_type = 'USER') OR (from_id = ${ hotel_id } AND comment_type = 'HOTEL') ORDER BY comment_time DESC`
+}
+
+// hos
+export const addHotelHos = `INSERT INTO ${ hos }(hotel_id, hos_score, hos_des) VALUES (?,?,?)`
+export const getHosList = `SELECT * from ${ hos } WHERE hotel_id = ?`
