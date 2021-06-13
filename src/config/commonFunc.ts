@@ -13,6 +13,9 @@ export const addMask = (str: string, type: string) => {
 export const getLiveStatus = (status: number, type: string) => {
   let status2ZH = ''
   switch (status) {
+    case -1:
+      status2ZH = type === 'HOTEL' ? '用户已下单，可以接单' : '等待商家接单'
+      break
     case 0:
       status2ZH = type === 'HOTEL' ? '等待用户入住' : '等待入住'
       break

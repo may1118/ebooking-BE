@@ -64,7 +64,8 @@ router.post('/buy', async function (req: Request, res: Response) {
       // 循环执行sql语句
       for (const item of roomArr) {
         const { room_id, needNumber, room_price, timeRange, hotel_id } = item.room
-        await query(addLiveRoom, [hotel_id, room_id, room_price, needNumber, timeRange[0], timeRange[1], userId, userName, userPhone, 0, 0, 0, new Date().getTime(), 0])
+        // status： -1 商家还未接单的状态
+        await query(addLiveRoom, [hotel_id, room_id, room_price, needNumber, timeRange[0], timeRange[1], userId, userName, userPhone, 0, 0, new Date().getTime(), -1])
       }
       // auto 接单操作
       autoOrder(hotel_id)

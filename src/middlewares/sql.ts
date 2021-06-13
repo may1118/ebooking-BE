@@ -46,7 +46,7 @@ export const getUserOrder = `SELECT * FROM ${ live } WHERE user_id = ?`
 
 // room
 export const getRoom = `SELECT hotel_id, room_id, room_quantity room_number, room_price, room_name FROM ${ room } WHERE hotel_id = ?`
-export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_recieve, is_tell_hotel_user, is_reject, order_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_tell_hotel_user, is_reject, order_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 export const getRoomByRoomId = `SELECT room_name FROM ${ room } WHERE room_id = ?`
 export const changeLiveStatus = `UPDATE ${ live } SET status = ? WHERE live_id = ?`
 
@@ -55,13 +55,16 @@ export const getSoldRoomByTimeRange = (room_id: any, live_time: any, leave_time:
 }
 export const getRoomQuantity = `SELECT room_quantity FROM ${ room } WHERE room_id = ?`
 
+// 自动接单
 export const getHotelAuto = `SELECT hotel_is_auto, hotel_auto_base hotel_auto_base_obj FROM ${ hotel } WHERE hotel_id = ?`
+export const getUnOrder = `SELECT * FROM ${ live } WHERE hotel_id = ? AND status = -1`
+export const updateAutoOrder = `UPDATE ${ live } SET status = 0, is_auto_order = 1 WHERE hotel_id = ? AND live_id = ?`
 
 // hotel_study
 export const getHotelStudyVideo = `SELECT * FROM ${  hotel_study }`
 
 // get live order info
-export const getOrderByHotelId = `SELECT * FROM ${ live } WHERE hotel_id = ?`
+export const getOrderByHotelId = `SELECT * FROM ${ live } WHERE hotel_id = ? ORDER BY live_time DESC`
 
 // comment
 export const getComment = `SELECT * FROM ${ comment } WHERE live_id = ?`
@@ -71,5 +74,5 @@ export const getAllCommentByHotelId = (hotel_id: string) => {
 }
 
 // hos
-export const addHotelHos = `INSERT INTO ${ hos }(hotel_id, hos_score, hos_des) VALUES (?,?,?)`
-export const getHosList = `SELECT * from ${ hos } WHERE hotel_id = ?`
+export const addHotelHos = `INSERT INTO ${ hos }(hotel_id, hos_score, hos_des, hosTime) VALUES (?,?,?, ?)`
+export const getHosList = `SELECT * from ${ hos } WHERE hotel_id = ? ORDER BY hosTime DESC`
