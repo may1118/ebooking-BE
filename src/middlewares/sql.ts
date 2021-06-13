@@ -46,7 +46,7 @@ export const getUserOrder = `SELECT * FROM ${ live } WHERE user_id = ? ORDER BY 
 
 // room
 export const getRoom = `SELECT hotel_id, room_id, room_quantity room_number, room_price, room_name FROM ${ room } WHERE hotel_id = ?`
-export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_tell_hotel_user, is_reject, order_time, status, orderTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ${ new Date().getTime() })`
+export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_tell_hotel_user, is_reject, order_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 export const getRoomByRoomId = `SELECT room_name FROM ${ room } WHERE room_id = ?`
 export const changeLiveStatus = `UPDATE ${ live } SET status = ? WHERE live_id = ?`
 
@@ -82,5 +82,5 @@ export const getHosList = `SELECT * from ${ hos } WHERE hotel_id = ? ORDER BY ho
 export const getOneYearData = (year: number, hotel_id: string) => {
   const startYear = new Date(`${ year }/1/1`).getTime()
   const endYear = new Date(`${ year + 1 }/1/1`).getTime()
-  return `SELECT * FROM ${ live } WHERE hotel_id = ${ hotel_id } AND orderTime >= ${ startYear } AND orderTime <= ${ endYear }`
+  return `SELECT * FROM ${ live } WHERE hotel_id = ${ hotel_id } AND order_time >= ${ startYear } AND order_time <= ${ endYear }`
 }

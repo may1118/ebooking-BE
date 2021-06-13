@@ -15,8 +15,8 @@ router.post('/', async function (req: Request, res: Response, next: NextFunction
   // get this year data
   const orderByYear: any = {}
   data.forEach((item: any) => {
-    const { orderTime } = item
-    const month = new Date(Number(orderTime)).getMonth() + 1
+    const { order_time } = item
+    const month = new Date(Number(order_time)).getMonth() + 1
     !!orderByYear[month] === true ? orderByYear[month].push(item) : orderByYear[month] = [item]
   })
 
