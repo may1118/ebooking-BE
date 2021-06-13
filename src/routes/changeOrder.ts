@@ -11,13 +11,13 @@ router.post('/', async function (req: Request, res: Response, next: NextFunction
   const hotel_id = req.cookies['hotel/hotel_id']
   try {
     await query(changeLiveStatus, [status, live_id])
-    if (status === 2) {
+    if (Number(status) === 2) {
       await addHos({
         hotel_id: hotel_id,
         hos_score: 0.01,
         hos_type: hosDes.finishOrder
       })
-    } else if (status === 4) {
+    } else if (Number(status) === 4) {
       await addHos({
         hotel_id: hotel_id,
         hos_score: -0.01,

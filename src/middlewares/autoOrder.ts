@@ -21,7 +21,7 @@ export const autoOrder = async (hotel_id: any) => {
       await query(updateAutoOrder, [hotel_id, live_id])
     }
     // 告知商家
-    const hotelIsConnect: boolean = isConnect(hotel_id)
+    const hotelIsConnect: boolean = isConnect(Number(hotel_id))
     if (hotelIsConnect) newOrderTellHotel(hotel_id)
   }
 }

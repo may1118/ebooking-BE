@@ -42,11 +42,11 @@ export const register = `INSERT INTO ${ live_user }(name, phone) values (?, ?)`
 export const isRegister = `SELECT COUNT(*) num FROM ${ live_user } where name = ? AND phone = ?`
 export const getRegisterId = `select id from ${ live_user } where phone = ?`
 export const getUserInfo = `SELECT * FROM ${ live_user } WHERE id = ?`
-export const getUserOrder = `SELECT * FROM ${ live } WHERE user_id = ?`
+export const getUserOrder = `SELECT * FROM ${ live } WHERE user_id = ? ORDER BY live_time DESC`
 
 // room
 export const getRoom = `SELECT hotel_id, room_id, room_quantity room_number, room_price, room_name FROM ${ room } WHERE hotel_id = ?`
-export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_tell_hotel_user, is_reject, order_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+export const addLiveRoom = `INSERT INTO ${ live }(hotel_id, room_id, live_price, needNumber, live_time, leave_time, user_id, user_name, user_phone, is_tell_hotel_user, is_reject, order_time, status, orderTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ${ new Date().getTime() })`
 export const getRoomByRoomId = `SELECT room_name FROM ${ room } WHERE room_id = ?`
 export const changeLiveStatus = `UPDATE ${ live } SET status = ? WHERE live_id = ?`
 
@@ -76,3 +76,11 @@ export const getAllCommentByHotelId = (hotel_id: string) => {
 // hos
 export const addHotelHos = `INSERT INTO ${ hos }(hotel_id, hos_score, hos_des, hosTime) VALUES (?,?,?, ?)`
 export const getHosList = `SELECT * from ${ hos } WHERE hotel_id = ? ORDER BY hosTime DESC`
+
+// live data analysis
+
+export const getOneYearData = (year: number, hotel_id: string) => {
+  const startYear = new Date(`${ year }/1/1`).getTime()
+  const endYear = new Date(`${ year + 1 }/1/1`).getTime()
+  return `SELECT * FROM ${ live } WHERE hotel_id = ${ hotel_id } AND orderTime >= ${ startYear } AND orderTime <= ${ endYear }`
+}

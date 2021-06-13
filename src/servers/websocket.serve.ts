@@ -27,7 +27,7 @@ app.ws('/ws/:wid', (ws: WebSocket, req: Request) => {
   }
   setInterval(() => {
     console.log('================================================================>')
-    console.log('判断告知商家', needTellHotel)
+    console.log('判断告知商家', needTellHotel, wsClients)
     if (needTellHotel.length) {
       for (const item of needTellHotel) {
         const { hotel_id, data, isTell } = item
@@ -37,7 +37,7 @@ app.ws('/ws/:wid', (ws: WebSocket, req: Request) => {
         }
       }
     }
-  }, 3 * 1000)
+  }, 5 * 1000)
 })
 
 app.listen(8888, () => {
@@ -47,8 +47,7 @@ app.listen(8888, () => {
 
 export const isConnect = (uid: any): boolean => {
   const isConnect = Object.keys(wsClients).filter((item: any) => {
-    const { ws } = item
-    return Number(ws) === Number(uid)
+    return Number(item) === Number(uid)
   })
   return Boolean(isConnect.length)
 }

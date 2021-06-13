@@ -10,6 +10,13 @@ export const addMask = (str: string, type: string) => {
   return maskInfo
 }
 
+// 对于时间戳的format
+export const formatTime = (time: string) => {
+  const date = new Date(Number(time))
+
+  return `${ date.getFullYear() }/${ date.getMonth() + 1 }/${ date.getDate() }`
+}
+
 export const getLiveStatus = (status: number, type: string) => {
   let status2ZH = ''
   switch (status) {
