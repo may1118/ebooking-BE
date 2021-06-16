@@ -24,3 +24,6 @@ export function decrypt(sign: string) {
   src += cipher.final('utf8');
   return src;
 }
+
+// console.log(encrypt('test'))
+// console.log(decrypt('eba1279512c5eb143f1b75e73e6e5e9e'))

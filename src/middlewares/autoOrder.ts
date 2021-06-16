@@ -43,10 +43,14 @@ const inTime = (autoTime: any) => {
 }
 
 const nowInAutoRange = (hotel_auto_base: any) => {
-  const autoTime = hotel_auto_base.autoTime
-  const autoDay = JSON.parse(hotel_auto_base.autoDay)
-  
-  const now = new Date()
-  const nowDate = now.getDay() + 1
-  return autoDay.includes(nowDate) && inTime(autoTime)
+  try {
+    const autoTime = hotel_auto_base.autoTime
+    const autoDay = JSON.parse(hotel_auto_base.autoDay)
+    
+    const now = new Date()
+    const nowDate = now.getDay() + 1
+    return autoDay.includes(nowDate) && inTime(autoTime)
+  } catch (error) {
+    return false
+  }
 }

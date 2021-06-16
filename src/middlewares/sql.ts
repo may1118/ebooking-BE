@@ -42,7 +42,7 @@ export const register = `INSERT INTO ${ live_user }(name, phone) values (?, ?)`
 export const isRegister = `SELECT COUNT(*) num FROM ${ live_user } where name = ? AND phone = ?`
 export const getRegisterId = `select id from ${ live_user } where phone = ?`
 export const getUserInfo = `SELECT * FROM ${ live_user } WHERE id = ?`
-export const getUserOrder = `SELECT * FROM ${ live } WHERE user_id = ? ORDER BY live_time DESC`
+export const getUserOrder = `SELECT * FROM ${ live } WHERE user_id = ? ORDER BY order_time DESC`
 
 // room
 export const getRoom = `SELECT hotel_id, room_id, room_quantity room_number, room_price, room_name FROM ${ room } WHERE hotel_id = ?`
@@ -64,7 +64,7 @@ export const updateAutoOrder = `UPDATE ${ live } SET status = 0, is_auto_order =
 export const getHotelStudyVideo = `SELECT * FROM ${  hotel_study }`
 
 // get live order info
-export const getOrderByHotelId = `SELECT * FROM ${ live } WHERE hotel_id = ? ORDER BY live_time DESC`
+export const getOrderByHotelId = `SELECT * FROM ${ live } WHERE hotel_id = ? ORDER BY order_time DESC`
 
 // comment
 export const getComment = `SELECT * FROM ${ comment } WHERE live_id = ?`
